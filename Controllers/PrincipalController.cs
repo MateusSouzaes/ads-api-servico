@@ -26,5 +26,17 @@ namespace ApiServico.Controllers
                 telefone = "999"
             });
         }
+
+
+        [HttpGet("status")]
+        public IActionResult Status()
+        {
+            return Ok(new
+            {
+               status = true,
+               version = "1.0",
+                mensagem = "teste"
+            });
+        }
     }
 }
