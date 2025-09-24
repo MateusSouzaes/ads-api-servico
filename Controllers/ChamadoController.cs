@@ -4,6 +4,7 @@ using ApiServico.Models.Dtos;
 using ApiServico.Models;
 using ApiServico.DataContexts;
 using Microsoft.EntityFrameworkCore;
+using ApiServico.Controllers.Helpers;
 
 namespace ApiServico.Controllers
 {
@@ -19,9 +20,24 @@ namespace ApiServico.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> BuscarTodos()
+        public async Task<IActionResult> BuscarTodos(
+                [FromQuery] string? search,
+                [FromQuery] string? situacao
+            )
         {
-            var chamados = await _context.Chamados.ToListAsync();
+            var query = _context.Chamados.AsQueryable();
+
+            if(search is not null)
+            {
+                query = query.Where(x => x.Titulo.Contains(search));
+            }
+
+            if(situacao is not null)
+            {
+                query = query.Where(x => x.Status.Equals(situacao));
+            }
+
+            var chamados = await query.ToListAsync();
 
             return Ok(chamados);
         }
