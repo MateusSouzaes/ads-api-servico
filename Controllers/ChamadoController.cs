@@ -20,26 +20,25 @@ namespace ApiServico.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> BuscarTodos(
-                [FromQuery] string? search,
-                [FromQuery] string? situacao
-            )
+        public async Task<IActionResult> BuscarTodos([FromQuery] ChamadoFilter filter)
         {
             var query = _context.Chamados.AsQueryable();
 
-            if(search is not null)
+            if(filter.Search is not null)
             {
-                query = query.Where(x => x.Titulo.Contains(search));
+                query = query.Where(x => x.Titulo.Contains(filter.Search));
             }
 
-            if(situacao is not null)
+            if(filter.Situacao is not null)
             {
-                query = query.Where(x => x.Status.Equals(situacao));
+                query = query.Where(x => x.Status.Equals(filter.Situacao));
             }
 
-            var chamados = await query.ToListAsync();
+            var (queryPaginated, response) = await Paginate<Chamado>.Set(query, filter);
 
-            return Ok(chamados);
+            response.Data = await queryPaginated.ToListAsync();
+
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
