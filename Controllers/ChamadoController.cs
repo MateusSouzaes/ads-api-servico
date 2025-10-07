@@ -4,7 +4,7 @@ using ApiServico.Models.Dtos;
 using ApiServico.Models;
 using ApiServico.DataContexts;
 using Microsoft.EntityFrameworkCore;
-using ApiServico.Controllers.Helpers;
+using ApiServico.Controllers;
 
 namespace ApiServico.Controllers
 {
