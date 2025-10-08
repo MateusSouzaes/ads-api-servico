@@ -1,5 +1,6 @@
 ﻿using ApiServico.Models.Dtos;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ApiServico.Models
 {
@@ -23,5 +24,15 @@ namespace ApiServico.Models
 
         [Column("situacao_cha")]
         public string Status { get; set; } = "Aberto";
+
+        /**
+         * Configuração de Relacionamento um-para-muitos (n:1)
+         * entre Chamado (n) e Prioridade (1)
+         */
+        public virtual Prioridade? Prioridade { get; set; }
+
+        [JsonIgnore]
+        [Column("id_pri_fk")]
+        public int PrioridadeId { get; set; }
     }
 }

@@ -11,5 +11,8 @@ namespace ApiServico.Models.Dtos
 
         [Required]
         public required string Descricao { get; set; }
+
+        [Required]
+        public int PrioridadeId { get; set; }
     }
 }

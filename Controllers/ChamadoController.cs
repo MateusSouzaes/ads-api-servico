@@ -27,17 +27,26 @@ namespace ApiServico.Controllers
         {
             var query = _context.Chamados.AsQueryable();
 
-            if(search is not null)
+            if (search is not null)
             {
                 query = query.Where(x => x.Titulo.Contains(search));
             }
 
-            if(situacao is not null)
+            if (situacao is not null)
             {
                 query = query.Where(x => x.Status.Equals(situacao));
             }
 
-            var chamados = await query.ToListAsync();
+            var chamados = await query
+                .Include(p => p.Prioridade)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Titulo,
+                    c.Status,
+                    Prioridade = new { c.Prioridade.Nome }
+                })
+                .ToListAsync();
 
             return Ok(chamados);
         }
@@ -47,7 +56,7 @@ namespace ApiServico.Controllers
         {
             var chamado = await _context.Chamados.FirstOrDefaultAsync(x => x.Id == id);
 
-            if(chamado is null)
+            if (chamado is null)
             {
                 return NotFound();
             }
@@ -58,7 +67,18 @@ namespace ApiServico.Controllers
         [HttpPost]
         public async Task<IActionResult> Criar([FromBody] ChamadoDto novoChamado)
         {
-            var chamado = new Chamado() { Titulo = novoChamado.Titulo, Descricao = novoChamado.Descricao };
+            var prioridade = await _context.Prioridades.FirstOrDefaultAsync(x => x.Id == novoChamado.PrioridadeId);
+
+            if (prioridade is null)
+            {
+                return NotFound("Prioridade informada não encontrada");
+            }
+
+            var chamado = new Chamado() { 
+                Titulo = novoChamado.Titulo, 
+                Descricao = novoChamado.Descricao,
+                PrioridadeId = novoChamado.PrioridadeId,
+            };
 
             await _context.Chamados.AddAsync(chamado);
             await _context.SaveChangesAsync();
