@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ApiServico.Models.Dtos;
-using ApiServico.Models;
-using ApiServico.DataContexts;
-using Microsoft.EntityFrameworkCore;
+﻿using ApiServico.Controllers.Filters;
 using ApiServico.Controllers.Helpers;
+using ApiServico.DataContexts;
+using ApiServico.Models;
+using ApiServico.Models.Dtos;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiServico.Controllers
 {
@@ -22,23 +23,27 @@ namespace ApiServico.Controllers
         [HttpGet]
         public async Task<IActionResult> BuscarTodos([FromQuery] ChamadoFilter filter)
         {
-            var query = _context.Chamados.AsQueryable();
+            //var query = _context.Chamados.AsQueryable();
 
-            if(filter.Search is not null)
-            {
-                query = query.Where(x => x.Titulo.Contains(filter.Search));
-            }
+            //if(filter.Search is not null)
+            //{
+            //    query = query.Where(x => x.Titulo.Contains(filter.Search));
+            //}
 
-            if(filter.Situacao is not null)
-            {
-                query = query.Where(x => x.Status.Equals(filter.Situacao));
-            }
+            //if(filter.Situacao is not null)
+            //{
+            //    query = query.Where(x => x.Status.Equals(filter.Situacao));
+            //}
 
-            var (queryPaginated, response) = await Paginate<Chamado>.Set(query, filter);
+            //var (queryPaginated, response) = await Paginate<Chamado>.Set(query, filter);
 
-            response.Data = await queryPaginated.ToListAsync();
+            //response.Data = await queryPaginated.ToListAsync();
 
-            return Ok(response);
+            //return Ok(response);
+            //await ChamadoFilterSet.Set(_context.Chamados, filter)
+
+            var result = await new ChamadoFilterSet().Set(_context.Chamados, filter);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
