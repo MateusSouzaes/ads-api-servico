@@ -13,5 +13,7 @@ namespace ApiServico.DataContexts
 
         public DbSet<Prioridade> Prioridades { get; set; }
 
+        public DbSet<Usuario> Usuarios { get; set; }
+
     }
 }

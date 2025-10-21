@@ -32,3 +32,27 @@ VALUES
 
 SELECT * FROM chamado;
 
+
+CREATE TABLE usuario (
+	id_usu INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome_usu VARCHAR(50) NOT NULL,
+    email_usu VARCHAR(255) NOT NULL,
+    senha_usu TEXT NOT NULL
+);
+
+INSERT INTO usuario (nome_usu, email_usu, senha_usu) VALUES 
+		('João Silva', 'joao.silva@example.com', 'senha123'),
+        ('Maria Oliveira', 'maria.oliveira@example.com', 'minhasenha'),
+        ('Carlos Souza', 'carlos.souza@example.com', '123456'),
+        ('Ana Pereira', 'ana.pereira@example.com', 'senhaSegura!'),
+        ('Lucas Santos', 'lucas.santos@example.com', 'pass@2025');
+        
+CREATE TABLE chamado_usuario (
+	id_cha_fk INT NOT NULL,
+    id_usu_fk INT NOT NULL,
+    
+    FOREIGN KEY (id_cha_fk) REFERENCES chamado(id_cha),
+    FOREIGN KEY (id_usu_fk) REFERENCES usuario(id_usu)
+);
+
+INSERT INTO chamado_usuario VALUES (1, 1), (1,2), (2,1), (2,2), (3,1), (3,2), (3,3);
