@@ -47,10 +47,12 @@ INSERT INTO usuario (nome_usu, email_usu, senha_usu) VALUES
         ('Ana Pereira', 'ana.pereira@example.com', 'senhaSegura!'),
         ('Lucas Santos', 'lucas.santos@example.com', 'pass@2025');
         
+DROP TABLE chamado_usuario;
 CREATE TABLE chamado_usuario (
 	id_cha_fk INT NOT NULL,
     id_usu_fk INT NOT NULL,
     
+    PRIMARY KEY (id_cha_fk, id_usu_fk),
     FOREIGN KEY (id_cha_fk) REFERENCES chamado(id_cha),
     FOREIGN KEY (id_usu_fk) REFERENCES usuario(id_usu)
 );

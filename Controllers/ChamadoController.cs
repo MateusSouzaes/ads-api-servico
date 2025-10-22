@@ -44,7 +44,8 @@ namespace ApiServico.Controllers
                     c.Id,
                     c.Titulo,
                     c.Status,
-                    Prioridade = new { c.Prioridade.Nome }
+                    Prioridade = new { c.Prioridade.Nome },
+                    Usuarios = c.Usuarios.Select(u => new { u.Id, u.Nome }).ToList()
                 })
                 .ToListAsync();
 
@@ -103,6 +104,58 @@ namespace ApiServico.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(chamado);
+        }
+
+        [HttpPost("{id}/adicionar-usuarios")]
+        public async Task<IActionResult> AdicionarUsuarios(int id, [FromBody] ChamadoUsuarioDto usuarios)
+        {
+            var chamado = await _context.Chamados.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (chamado is null)
+            {
+                return NotFound();
+            }
+
+            var _usuarios = await _context.Usuarios.
+                Where(u => usuarios.UsuariosIds.Contains(u.Id))
+                .ToListAsync();
+
+            if(_usuarios.Count != usuarios.UsuariosIds.Count)
+            {
+                return NotFound("Um ou mais usuários não foram encontrados");
+            }
+
+            chamado.Usuarios = _usuarios;
+
+            _context.Chamados.Update(chamado);
+            await _context.SaveChangesAsync();
+
+            return Ok(chamado);
+        }
+
+
+        [HttpGet("{id}/remover-usuario/{usuarioId}")]
+        public async Task<IActionResult> RemoverUsuarioPorId(int id, int usuarioId)
+        {
+            var chamado = await _context.Chamados
+                .Include(c => c.Usuarios)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (chamado is null)
+            {
+                return NotFound();
+            }
+            var usuario = chamado.Usuarios.FirstOrDefault(x => x.Id == usuarioId);
+
+            if (usuario is null)
+            {
+                return NotFound("Usuário não está vinculado ao chamado");
+            }
+
+            chamado.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

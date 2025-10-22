@@ -34,5 +34,7 @@ namespace ApiServico.Models
         [JsonIgnore]
         [Column("id_pri_fk")]
         public int PrioridadeId { get; set; }
+
+        public ICollection<Usuario> Usuarios { get; set; } = [];
     }
 }

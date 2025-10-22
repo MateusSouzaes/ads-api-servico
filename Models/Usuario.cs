@@ -19,5 +19,7 @@ namespace ApiServico.Models
         [Column("senha_usu")]
         public string? Senha { get; set; }
 
+        public ICollection<Chamado> Chamados { get; set; } = [];
+
     }
 }

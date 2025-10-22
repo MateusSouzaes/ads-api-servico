@@ -15,5 +15,18 @@ namespace ApiServico.DataContexts
 
         public DbSet<Usuario> Usuarios { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Chamado>()
+                .HasMany(c => c.Usuarios)
+                .WithMany(u => u.Chamados)
+                .UsingEntity<Dictionary<string, object>>(
+                "chamado_usuario",
+                f => f.HasOne<Usuario>().WithMany().HasForeignKey("id_usu_fk"),
+                f => f.HasOne<Chamado>().WithMany().HasForeignKey("id_cha_fk"),
+                f => f.ToTable("chamado_usuario")
+                );
+        }
+
     }
 }
